@@ -1,21 +1,32 @@
-# Starter for exercise 3
+# Pokedex Exam Project
 
-Fell behind, or no project yet? Start [exercise 3](../../exercise-3-components.md) from here. This is the result of exercise 2: lint and tsc clean, no loose hex codes.
+An Expo and React Native Pokedex app for the Inholland Frontend Development exam. The app follows the supplied mobile Figma design and uses live data from PokeAPI.
 
-1. Get the course repo: `git clone https://github.com/Kevinvandenhoek/inholland-react-native-course.git`, or **Code → Download ZIP** on GitHub. Copy this folder out of it to your own place and name it `Pokedex`.
-2. In that folder:
+## Planned features
 
-   ```bash
-   npm install
-   npx expo start
-   ```
+- Browse the complete Pokemon catalogue
+- Search Pokemon by name
+- View details, stats, and evolution chains
+- Save favorites across app restarts
+- Compare two Pokemon by base stats
+- Share a Pokemon through the native share sheet
 
-3. Scan the QR code with Expo Go. Works? Then put it in git:
+The product decisions and acceptance criteria are documented in [`specs/product.md`](./specs/product.md) and [`specs/features/`](./specs/features/).
 
-   ```bash
-   git init
-   git add .
-   git commit -m "Start from the exercise 3 starter"
-   ```
+## Technology
 
-   Then push it to your own GitHub repo.
+- Expo and React Native
+- Expo Router
+- TypeScript
+- TanStack Query
+- Expo SQLite
+- PokeAPI
+
+## Run locally
+
+```bash
+npm install
+npx expo start
+```
+
+Scan the QR code with Expo Go.
