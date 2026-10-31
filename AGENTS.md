@@ -1,3 +1,54 @@
+# Pokedex
+
+Pokedex is an Expo and React Native app for browsing, searching, saving, and comparing Pokemon using live data from PokeAPI.
+
+## Product scope
+
+- Follow the supplied Pokemon Code Challenge Figma design for the list, search, detail, evolution, favorites, and comparison experiences.
+- The required features are Pokemon list, search, details with stats and evolution, favorites, and comparison.
+- Use `https://pokeapi.co/api/v2/` as the remote API. It does not require an API key.
+- Favorites must persist in SQLite after the app restarts.
+- Include loading, empty, and recoverable error states for asynchronous screens.
+- The app must run in Expo Go from a QR code.
+
+## Structure and ownership
+
+- `src/app/`: Expo Router route files and screen composition only. Keep routes thin.
+- `src/components/`: reusable presentation components. Components must not call `fetch` or execute SQL.
+- `src/hooks/`: TanStack Query hooks and shared stateful or business logic.
+- `src/services/`: PokeAPI requests and SQLite operations. Services do not render UI.
+- `src/constants/`: theme tokens and stable application constants.
+- A screen renders, a hook gets or coordinates data, and a service talks to the API or database. A file must not take on two of these responsibilities.
+
+## Shared setup
+
+- Reuse the single `QueryClient` and `QueryClientProvider` in `src/app/_layout.tsx`. Do not create another query client.
+- Reuse `src/constants/theme.ts` and `src/hooks/use-theme.ts` for colors and spacing. Do not hardcode hex colors in screens or components.
+- `expo-sqlite` is installed and configured in `app.json`; create one shared database service in `src/services/` when the favorites feature needs it.
+- Create one shared PokeAPI service in `src/services/` when the first remote-data feature needs it, then reuse it in every later feature.
+- When a feature adds reusable setup, document what it is and where it lives in this section.
+
+## Data and UI rules
+
+- Use TanStack Query hooks for remote server state. Do not fetch with `useEffect` in a screen.
+- Keep PokeAPI response types explicit and map remote responses into app-facing data when the UI does not need the full payload.
+- Use SQLite only for persistent local product data such as favorites; do not copy live API responses into SQLite without a specification requiring it.
+- Use `Pressable` for interactions and provide pressed, disabled, loading, and error states where relevant.
+- Respect safe areas, accessibility labels, readable contrast, and touch targets on iOS and Android.
+- Match the Figma layout and visual hierarchy while using responsive React Native layouts instead of fixed screen coordinates.
+- Ask before adding a dependency. Install approved Expo-compatible packages with `npx expo install`.
+
+## Issue workflow
+
+- Implement one GitHub issue per chat and only the feature described by its specification and acceptance criteria.
+- Before writing code for an issue, post one issue comment containing the plan, affected files, uncertainties, and a `- [ ]` task list using `gh issue comment`. Wait for the user's approval before coding.
+- Keep the issue task list current while building and do not mark a task complete until it is verified.
+- Touch only files required by the issue. Do not add unrelated refactors or features.
+- Run `npx expo lint` and `npx tsc --noEmit`, then test the feature in Expo Go, including its loading and error behavior.
+- Do not commit or push unless the user explicitly asks. A feature commit must reference and close its issue.
+
+---
+
 This is an Expo/React Native mobile application. Prioritize mobile-first patterns, performance, and cross-platform compatibility.
 
 ## Expo has changed — do not trust your training data
