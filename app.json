@@ -28,9 +28,9 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 76
+          "backgroundColor": "#EDF6FF",
+          "image": "./assets/images/pokemon-logo.png",
+          "imageWidth": 216
         }
       ],
       "expo-sqlite"

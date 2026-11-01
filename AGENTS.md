@@ -26,6 +26,9 @@ Pokedex is an Expo and React Native app for browsing, searching, saving, and com
 - Reuse `src/constants/theme.ts` and `src/hooks/use-theme.ts` for colors and spacing. Do not hardcode hex colors in screens or components.
 - `expo-sqlite` is installed and configured in `app.json`; create one shared database service in `src/services/` when the favorites feature needs it.
 - Create one shared PokeAPI service in `src/services/` when the first remote-data feature needs it, then reuse it in every later feature.
+- The shared PokeAPI boundary is `src/services/pokeapi.ts`: paginated catalogue requests, mapped card metadata, cancellation, a six-request concurrency limit, and request timeouts. Reuse it in future features. Query hooks live in `src/hooks/use-pokemon-list.ts` and `src/hooks/use-pokemon-card.ts`.
+- Rubik Regular, Medium, and Bold are loaded from `assets/fonts/` by `src/hooks/use-app-fonts.ts`; reuse the font tokens in `src/constants/theme.ts`. The root coordinates readiness with the single `AnimatedSplashOverlay` in `src/components/animated-icon.tsx`.
+- Expo Router tabs live in `src/app/(tabs)/_layout.tsx`. Favorites and Compare are placeholders until their feature issues.
 - When a feature adds reusable setup, document what it is and where it lives in this section.
 
 ## Data and UI rules
