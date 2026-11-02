@@ -1,5 +1,5 @@
-import { FeaturePlaceholder } from '@/components/feature-placeholder';
+import { PokemonCompare } from '@/components/pokemon-compare';
 
 export default function CompareScreen() {
-  return <FeaturePlaceholder feature="Compare" />;
+  return <PokemonCompare />;
 }

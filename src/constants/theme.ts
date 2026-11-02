@@ -74,3 +74,5 @@ export const DetailLayout = {
   connectorWidth: 80, connectorHeight: 14,
 };
 export const TypeHeaderColors: Record<string, string> = Object.fromEntries(Object.entries(TypeColors).map(([type, color]) => [type, color + '20']));
+
+export const CompareLayout = { artwork: 136, statHeight: 6 };

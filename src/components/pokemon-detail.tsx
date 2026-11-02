@@ -8,11 +8,11 @@ import { PokemonAbout } from '@/components/pokemon-about';
 import { PokemonArtwork } from '@/components/pokemon-artwork';
 import { PokemonEvolution } from '@/components/pokemon-evolution';
 import { PokemonStats } from '@/components/pokemon-stats';
-import { DetailLayout, Fonts, Layout, Radius, Spacing, TypeColors, TypeHeaderColors, Typography } from '@/constants/theme';
+import { PokemonTypeBadges } from '@/components/pokemon-type-badges';
+import { DetailLayout, Fonts, Layout, Spacing, TypeHeaderColors, Typography } from '@/constants/theme';
 import type { DetailSection, usePokemonDetail } from '@/hooks/use-pokemon-detail';
 import type { usePokemonEvolution } from '@/hooks/use-pokemon-evolution';
 import { useTheme } from '@/hooks/use-theme';
-import { formatPokemonName } from '@/services/pokeapi';
 
 const sections: DetailSection[] = ['About', 'Stats', 'Evolution'];
 type Props = { detail: ReturnType<typeof usePokemonDetail>; evolution: ReturnType<typeof usePokemonEvolution> };
@@ -37,7 +37,7 @@ export function PokemonDetail({ detail, evolution }: Props) {
       {favorite.error ? <ErrorView message={favorite.error} onRetry={favorite.retry} loading={favorite.retrying} /> : null}
       <View style={styles.header}>
         <View style={styles.heading}><Text accessibilityRole="header" style={[styles.title, { color: theme.text }]}>{data.displayName}</Text><Text accessibilityLabel={'Pokemon number ' + data.id} style={[styles.number, { color: theme.textSecondary }]}>#{String(data.id).padStart(3, '0')}</Text></View>
-        <View style={styles.types}>{data.types.map((type) => <View key={type} style={[styles.type, { backgroundColor: theme.backgroundSelected }]}><View style={[styles.dot, { backgroundColor: TypeColors[type] ?? theme.badge }]} /><Text style={[styles.typeLabel, { color: theme.text }]}>{formatPokemonName(type)}</Text></View>)}</View>
+        <PokemonTypeBadges types={data.types} />
       </View>
       <View style={styles.artwork}><PokemonArtwork uri={data.artwork} name={data.displayName} size={DetailLayout.artwork} /></View>
       <View style={[styles.panel, { backgroundColor: theme.card }]}>
@@ -61,10 +61,6 @@ const styles = StyleSheet.create({
   header: { padding: Spacing.four, gap: Spacing.twoHalf }, heading: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: Spacing.two },
   title: { flexShrink: 1, fontFamily: Fonts.bold, fontSize: DetailLayout.title },
   number: { fontFamily: Fonts.sans, fontSize: Typography.title },
-  types: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two },
-  type: { borderRadius: DetailLayout.pill, flexDirection: 'row', alignItems: 'center', gap: Spacing.two, paddingVertical: Spacing.one, paddingHorizontal: Spacing.twoHalf },
-  dot: { width: Spacing.twoHalf, height: Spacing.twoHalf, borderRadius: Radius.m },
-  typeLabel: { fontFamily: Fonts.medium, fontSize: Typography.body },
   artwork: { alignItems: 'center', zIndex: 1, marginBottom: -DetailLayout.artworkOverlap },
   panel: { flexGrow: 1, paddingTop: DetailLayout.artworkOverlap + Spacing.four, paddingHorizontal: Spacing.four, paddingBottom: Spacing.six, gap: Spacing.four },
   tabs: { flexDirection: 'row' }, tab: { flex: 1, minHeight: Layout.touch, justifyContent: 'center', paddingVertical: Spacing.two, borderBottomWidth: DetailLayout.tabBorder },
