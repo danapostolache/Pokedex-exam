@@ -4,7 +4,7 @@ export const POKEMON_PAGE_SIZE = 24;
 
 export type PokemonSummary = { id: number; name: string; displayName: string };
 export type PokemonPage = { pokemon: PokemonSummary[]; total: number; nextOffset: number | null };
-export type PokemonCardData = { artwork: string | null; types: string[] };
+export type PokemonCardData = PokemonSummary & { artwork: string | null; types: string[] };
 
 type NamedResource = { name: string; url: string };
 type PokemonPageResponse = { count: number; next: string | null; results: NamedResource[] };
@@ -236,11 +236,12 @@ export async function getPokemonCatalogue(signal?: AbortSignal): Promise<Pokemon
 
 export async function getPokemonCard(id: number, signal?: AbortSignal): Promise<PokemonCardData> {
   const pokemon = await request<PokemonResponse>('pokemon/' + id, signal);
-  if (pokemon.id !== id || !pokemon.sprites || !Array.isArray(pokemon.types)) {
+  if (pokemon.id !== id || typeof pokemon.name !== 'string' || !pokemon.name.trim() || !pokemon.sprites || !Array.isArray(pokemon.types)) {
     throw new Error('PokeAPI returned invalid artwork information. Please try again.');
   }
   // The live sprite matches the supplied pixel-art cards; fall back for alternate forms.
   return {
+    id: pokemon.id, name: pokemon.name, displayName: formatPokemonName(pokemon.name),
     artwork: pokemon.sprites.front_default ?? pokemon.sprites.other?.['official-artwork']?.front_default ?? null,
     types: pokemon.types.map((entry) => entry.type.name),
   };

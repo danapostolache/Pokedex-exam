@@ -1,5 +1,5 @@
-import { FeaturePlaceholder } from '@/components/feature-placeholder';
+import { PokemonFavorites } from '@/components/pokemon-favorites';
 
 export default function FavoritesScreen() {
-  return <FeaturePlaceholder feature="Favorites" />;
+  return <PokemonFavorites />;
 }

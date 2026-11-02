@@ -84,7 +84,7 @@ export function PokemonList() {
           </View>
         ) : undefined}
       />
-      <PokemonOptionsSheet pokemon={actions.selected} sharing={actions.sharing} error={actions.shareError} onCancel={actions.dismiss} onShare={actions.share} onOpen={() => { if (actions.selected) actions.open(actions.selected); }} onDismiss={actions.finishOpen} />
+      <PokemonOptionsSheet pokemon={actions.selected} sharing={actions.sharing} error={actions.shareError} favorite={actions.favorite} onCancel={actions.dismiss} onShare={actions.share} onOpen={() => { if (actions.selected) actions.open(actions.selected); }} onDismiss={actions.finishOpen} />
     </SafeAreaView>
   );
 }

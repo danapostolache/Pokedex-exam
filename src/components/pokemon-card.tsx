@@ -4,24 +4,28 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, View, useWindowDimensio
 
 import { Fonts, Layout, Radius, Spacing, Typography } from '@/constants/theme';
 import { usePokemonCard } from '@/hooks/use-pokemon-card';
+import { useFavorites } from '@/hooks/use-favorites';
 import { useTheme } from '@/hooks/use-theme';
 import type { PokemonSummary } from '@/services/pokeapi';
 
-type Props = { pokemon: PokemonSummary; width: number; active: boolean; onOptions: (pokemon: PokemonSummary) => void; onOpen: (pokemon: PokemonSummary) => void };
+type Props = { pokemon: PokemonSummary | Pick<PokemonSummary, 'id'>; width: number; active: boolean; onOptions: (pokemon: PokemonSummary) => void; onOpen: (pokemon: PokemonSummary) => void };
 
 export const PokemonCard = memo(function PokemonCard({ pokemon, width, active, onOptions, onOpen }: Props) {
   const theme = useTheme();
   const { fontScale } = useWindowDimensions();
   const card = usePokemonCard(pokemon.id, active);
+  const favorites = useFavorites();
+  const summary = card.data ?? ('name' in pokemon ? pokemon : { id: pokemon.id, name: String(pokemon.id), displayName: 'Pokémon #' + pokemon.id });
+  const saved = favorites.ids.has(pokemon.id);
   const failed = card.isError || card.imageFailed;
   const artwork = card.data?.artwork;
   const spaciousFooter = fontScale > 1 || width < Layout.minReadableCardWidth;
   const optionsButton = (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={'Options for ' + pokemon.displayName}
-      accessibilityHint="Opens sharing and other Pokemon actions"
-      onPress={() => onOptions(pokemon)}
+      accessibilityLabel={'Options for ' + summary.displayName}
+      accessibilityHint={saved ? 'Saved to favorites. Opens Pokemon actions.' : 'Opens sharing and favorite actions'}
+      onPress={() => onOptions(summary)}
       style={({ pressed }) => [
         styles.options,
         spaciousFooter && styles.floatingOptions,
@@ -33,18 +37,18 @@ export const PokemonCard = memo(function PokemonCard({ pokemon, width, active, o
   );
   return (
     <View style={[styles.card, { width, backgroundColor: theme.card, shadowColor: theme.shadow }]}>
-      <Pressable accessibilityRole="button" accessibilityLabel={'Open ' + pokemon.displayName} onPress={() => onOpen(pokemon)} style={({ pressed }) => [StyleSheet.absoluteFill, { backgroundColor: pressed ? theme.backgroundSelected : undefined }]} />
+      <Pressable accessibilityRole="button" accessibilityLabel={'Open ' + summary.displayName} onPress={() => onOpen(summary)} style={({ pressed }) => [StyleSheet.absoluteFill, { backgroundColor: pressed ? theme.backgroundSelected : undefined }]} />
       <View pointerEvents="box-none" style={[styles.artwork, { backgroundColor: theme.backgroundElement }]}>
         {failed ? (
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={'Retry artwork for ' + pokemon.displayName}
+            accessibilityLabel={'Retry Pokemon data or artwork for ' + summary.displayName}
             disabled={card.isFetching}
             onPress={card.retryArtwork}
             style={({ pressed }) => [styles.fallback, { opacity: pressed ? Layout.pressedOpacity : 1 }]}
           >
-            <Text style={[styles.fallbackText, { color: theme.textSecondary }]}>Artwork unavailable</Text>
-            {card.isFetching ? <ActivityIndicator color={theme.badge} /> : <Text style={[styles.retry, { color: theme.badge }]}>Retry image</Text>}
+            <Text style={[styles.fallbackText, { color: theme.textSecondary }]}>{card.isError ? 'Pokémon data unavailable' : 'Artwork unavailable'}</Text>
+            {card.isFetching ? <ActivityIndicator color={theme.badge} /> : <Text style={[styles.retry, { color: theme.badge }]}>{card.isError ? 'Retry' : 'Retry image'}</Text>}
           </Pressable>
         ) : artwork ? (
           <Image
@@ -55,12 +59,12 @@ export const PokemonCard = memo(function PokemonCard({ pokemon, width, active, o
             contentFit="contain"
             cachePolicy="memory-disk"
             recyclingKey={String(pokemon.id) + '-' + card.imageAttempt}
-            accessibilityLabel={pokemon.displayName + ' artwork'}
+            accessibilityLabel={summary.displayName + ' artwork'}
             onError={card.onImageError}
           />
         ) : (
           <View pointerEvents="none" style={styles.fallback}>
-            {card.isPending ? <ActivityIndicator accessibilityLabel={'Loading artwork for ' + pokemon.displayName} color={theme.badge} /> :
+            {card.isPending ? <ActivityIndicator accessibilityLabel={'Loading artwork for ' + summary.displayName} color={theme.badge} /> :
               <Text style={[styles.fallbackText, { color: theme.textSecondary }]}>No artwork available</Text>}
           </View>
         )}
@@ -72,7 +76,7 @@ export const PokemonCard = memo(function PokemonCard({ pokemon, width, active, o
         {spaciousFooter ? optionsButton : null}
       </View>
       <View pointerEvents="box-none" style={[styles.footer, spaciousFooter && styles.spaciousFooter]}>
-        <Text pointerEvents="none" accessible={false} style={[styles.name, { color: theme.text }]}>{pokemon.displayName}</Text>
+        <Text pointerEvents="none" accessible={false} style={[styles.name, { color: theme.text }]}>{summary.displayName}</Text>
         {spaciousFooter ? null : optionsButton}
       </View>
     </View>

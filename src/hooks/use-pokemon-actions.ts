@@ -2,12 +2,14 @@ import { useCallback, useRef, useState } from 'react';
 import { Keyboard, Platform, Share } from 'react-native';
 
 import { openPokemon } from '@/hooks/use-pokemon-detail';
+import { useFavorite } from '@/hooks/use-favorites';
 import { pokemonLink, type PokemonSummary } from '@/services/pokeapi';
 
 export function usePokemonActions() {
   const [selected, setSelected] = useState<PokemonSummary | null>(null);
   const [sharing, setSharing] = useState(false);
   const [shareError, setShareError] = useState<string | null>(null);
+  const favorite = useFavorite(selected?.id);
   const inFlight = useRef(false);
   const pendingOpen = useRef<PokemonSummary | null>(null);
   const openOptions = useCallback((pokemon: PokemonSummary) => {
@@ -15,7 +17,7 @@ export function usePokemonActions() {
     setSelected(pokemon);
   }, []);
   const dismiss = () => {
-    if (!inFlight.current) {
+    if (!inFlight.current && !favorite.pending) {
       setSelected(null);
       setShareError(null);
     }
@@ -35,7 +37,7 @@ export function usePokemonActions() {
     else openPokemon(pokemon.id);
   }, [selected]);
   const share = async () => {
-    if (!selected || inFlight.current) return;
+    if (!selected || inFlight.current || favorite.pending) return;
     inFlight.current = true;
     setSharing(true);
     setShareError(null);
@@ -52,5 +54,5 @@ export function usePokemonActions() {
       setSharing(false);
     }
   };
-  return { selected, sharing, shareError, openOptions, dismiss, share, open, finishOpen };
+  return { selected, sharing, shareError, favorite, openOptions, dismiss, share, open, finishOpen };
 }

@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { useState } from 'react';
 
+import { useFavorite } from '@/hooks/use-favorites';
 import { getPokemonDetail, getPokemonSpecies, normalizePokemonIdentifier, PokemonNotFoundError } from '@/services/pokeapi';
 
 export type DetailSection = 'About' | 'Stats' | 'Evolution';
@@ -25,10 +26,11 @@ export function usePokemonDetail(value: string | string[] | undefined) {
     queryFn: ({ signal }) => getPokemonDetail(identifier ?? '', signal), enabled: identifier !== null,
   });
   const speciesUrl = pokemon.data?.speciesUrl;
+  const favorite = useFavorite(pokemon.data?.id);
   const species = useQuery({
     ...detailQueryOptions, queryKey: ['pokemon', 'species', speciesUrl],
     queryFn: ({ signal }) => getPokemonSpecies(speciesUrl ?? '', signal), enabled: Boolean(speciesUrl),
   });
   const back = () => { if (router.canGoBack()) router.back(); else router.replace('/'); };
-  return { pokemon, species, section, setSection, back, openPokemon, notFound: identifier === null || pokemon.error instanceof PokemonNotFoundError };
+  return { pokemon, species, favorite, section, setSection, back, openPokemon, notFound: identifier === null || pokemon.error instanceof PokemonNotFoundError };
 }
