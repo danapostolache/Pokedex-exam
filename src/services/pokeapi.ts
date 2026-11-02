@@ -86,15 +86,15 @@ export function pokemonLink(id: number): string {
   return POKEAPI_BASE_URL + 'pokemon/' + id + '/';
 }
 
-export async function getPokemonPage(offset: number, signal?: AbortSignal): Promise<PokemonPage> {
-  const page = await request<PokemonPageResponse>('pokemon?limit=' + POKEMON_PAGE_SIZE + '&offset=' + offset, signal);
-  if (!Number.isInteger(page.count) || page.count < 0 || !Array.isArray(page.results)) {
+async function getCataloguePage(offset: number, limit: number, signal?: AbortSignal): Promise<PokemonPage> {
+  const page = await request<PokemonPageResponse>('pokemon?limit=' + limit + '&offset=' + offset, signal);
+  if (!Number.isSafeInteger(page.count) || page.count < 0 || !Array.isArray(page.results)) {
     throw new Error('PokeAPI returned an invalid catalogue. Please try again.');
   }
   const pokemon = page.results.map((entry) => {
     const match = typeof entry.url === 'string' && entry.url.match(/\/pokemon\/(\d+)\/?$/);
     const id = match ? Number(match[1]) : 0;
-    if (!Number.isSafeInteger(id) || id <= 0 || typeof entry.name !== 'string') {
+    if (!Number.isSafeInteger(id) || id <= 0 || typeof entry.name !== 'string' || !entry.name.trim()) {
       throw new Error('PokeAPI returned an invalid Pokemon. Please try again.');
     }
     return { id, name: entry.name, displayName: formatPokemonName(entry.name) };
@@ -105,6 +105,26 @@ export async function getPokemonPage(offset: number, signal?: AbortSignal): Prom
     throw new Error('PokeAPI returned invalid pagination. Please try again.');
   }
   return { pokemon, total: page.count, nextOffset: pokemon.length ? nextOffset : null };
+}
+
+export function getPokemonPage(offset: number, signal?: AbortSignal): Promise<PokemonPage> {
+  return getCataloguePage(offset, POKEMON_PAGE_SIZE, signal);
+}
+
+/** Names only: artwork remains a separate query for each visible card. */
+export async function getPokemonCatalogue(signal?: AbortSignal): Promise<PokemonSummary[]> {
+  const limit = 100000;
+  let page = await getCataloguePage(0, limit, signal);
+  const total = page.total;
+  const unique = new Map<number, PokemonSummary>();
+  while (true) {
+    if (page.total !== total) throw new Error('PokeAPI catalogue changed while loading. Please try again.');
+    for (const pokemon of page.pokemon) unique.set(pokemon.id, pokemon);
+    if (page.nextOffset === null) break;
+    page = await getCataloguePage(page.nextOffset, limit, signal);
+  }
+  if (unique.size !== total) throw new Error('PokeAPI returned an incomplete catalogue. Please try again.');
+  return [...unique.values()];
 }
 
 export async function getPokemonCard(id: number, signal?: AbortSignal): Promise<PokemonCardData> {
