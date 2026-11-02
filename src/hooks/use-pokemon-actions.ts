@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
-import { Share } from 'react-native';
+import { Keyboard, Platform, Share } from 'react-native';
 
+import { openPokemon } from '@/hooks/use-pokemon-detail';
 import { pokemonLink, type PokemonSummary } from '@/services/pokeapi';
 
 export function usePokemonActions() {
@@ -8,6 +9,7 @@ export function usePokemonActions() {
   const [sharing, setSharing] = useState(false);
   const [shareError, setShareError] = useState<string | null>(null);
   const inFlight = useRef(false);
+  const pendingOpen = useRef<PokemonSummary | null>(null);
   const openOptions = useCallback((pokemon: PokemonSummary) => {
     setShareError(null);
     setSelected(pokemon);
@@ -18,6 +20,20 @@ export function usePokemonActions() {
       setShareError(null);
     }
   };
+  const finishOpen = useCallback(() => {
+    const pokemon = pendingOpen.current;
+    pendingOpen.current = null;
+    if (pokemon) openPokemon(pokemon.id);
+  }, []);
+  const open = useCallback((pokemon: PokemonSummary) => {
+    if (inFlight.current || pendingOpen.current) return;
+    Keyboard.dismiss();
+    setSelected(null);
+    setShareError(null);
+    // UIKit must finish dismissing the native modal before pushing the stack screen.
+    if (selected && Platform.OS === 'ios') pendingOpen.current = pokemon;
+    else openPokemon(pokemon.id);
+  }, [selected]);
   const share = async () => {
     if (!selected || inFlight.current) return;
     inFlight.current = true;
@@ -36,5 +52,5 @@ export function usePokemonActions() {
       setSharing(false);
     }
   };
-  return { selected, sharing, shareError, openOptions, dismiss, share };
+  return { selected, sharing, shareError, openOptions, dismiss, share, open, finishOpen };
 }

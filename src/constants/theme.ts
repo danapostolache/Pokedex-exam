@@ -67,3 +67,10 @@ export const TypeColors: Record<string, string> = {
   rock: '#B6A136', ghost: '#735797', dragon: '#6F35FC', dark: '#705746',
   steel: '#B7B7CE', fairy: '#D685AD',
 };
+
+export const DetailLayout = {
+  artwork: 200, artworkOverlap: 50, title: 32, evolutionArtwork: 80,
+  labelWidth: 100, statHeight: 4, statMaximum: 255, pill: 99, tabBorder: 2,
+  connectorWidth: 80, connectorHeight: 14,
+};
+export const TypeHeaderColors: Record<string, string> = Object.fromEntries(Object.entries(TypeColors).map(([type, color]) => [type, color + '20']));

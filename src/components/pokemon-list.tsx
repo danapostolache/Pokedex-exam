@@ -45,7 +45,7 @@ export function PokemonList() {
         data={list.pokemon}
         keyExtractor={(pokemon) => String(pokemon.id)}
         numColumns={columns}
-        renderItem={({ item, index }) => <PokemonCard pokemon={item} width={cardWidth} active={list.visibleIds ? list.visibleIds.has(item.id) : index < 6} onOptions={actions.openOptions} />}
+        renderItem={({ item, index }) => <PokemonCard pokemon={item} width={cardWidth} active={list.visibleIds ? list.visibleIds.has(item.id) : index < 6} onOptions={actions.openOptions} onOpen={actions.open} />}
         extraData={list.visibleIds}
         columnWrapperStyle={columns > 1 ? styles.row : undefined}
         ItemSeparatorComponent={CardRowSeparator}
@@ -84,7 +84,7 @@ export function PokemonList() {
           </View>
         ) : undefined}
       />
-      <PokemonOptionsSheet pokemon={actions.selected} sharing={actions.sharing} error={actions.shareError} onCancel={actions.dismiss} onShare={actions.share} />
+      <PokemonOptionsSheet pokemon={actions.selected} sharing={actions.sharing} error={actions.shareError} onCancel={actions.dismiss} onShare={actions.share} onOpen={() => { if (actions.selected) actions.open(actions.selected); }} onDismiss={actions.finishOpen} />
     </SafeAreaView>
   );
 }

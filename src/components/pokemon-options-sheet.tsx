@@ -12,25 +12,26 @@ type Props = {
   error: string | null;
   onCancel: () => void;
   onShare: () => void;
+  onOpen: () => void;
+  onDismiss: () => void;
 };
 
-export function PokemonOptionsSheet({ pokemon, sharing, error, onCancel, onShare }: Props) {
+export function PokemonOptionsSheet({ pokemon, sharing, error, onCancel, onShare, onOpen, onDismiss }: Props) {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const android = Platform.OS === 'android';
   return (
-    <Modal visible={pokemon !== null} transparent animationType="fade" onRequestClose={onCancel} statusBarTranslucent>
+    <Modal visible={pokemon !== null} transparent animationType="fade" onRequestClose={onCancel} onDismiss={onDismiss} statusBarTranslucent>
       <View style={[styles.backdrop, { backgroundColor: theme.backdrop }]}>
         <Pressable accessibilityRole="button" accessibilityLabel="Dismiss Pokemon options" disabled={sharing} onPress={onCancel} style={StyleSheet.absoluteFill} />
         <View accessibilityViewIsModal onAccessibilityEscape={onCancel} style={[styles.sheet, { paddingBottom: Math.max(insets.bottom, Spacing.twoHalf), paddingTop: insets.top, paddingHorizontal: android ? 0 : Spacing.twoHalf }]}>
           <ScrollView bounces={false} contentContainerStyle={styles.content}>
             <View style={[styles.group, { backgroundColor: android ? theme.card : theme.sheet, borderRadius: android ? 0 : Radius.l }]}>
               <Text accessibilityRole="header" style={[styles.heading, { color: theme.text, borderColor: theme.border }]}>{pokemon?.displayName}</Text>
-              <Pressable disabled accessibilityRole="button" accessibilityState={{ disabled: true }} accessibilityLabel="Open Pokemon. Details are not available yet." style={[styles.row, styles.disabled, { borderColor: theme.border }]}>
-                <Image source={require('@/assets/images/pokemon-open.png')} tintColor={theme.disabled} style={styles.icon} contentFit="contain" accessible={false} />
+              <Pressable disabled={sharing} onPress={onOpen} accessibilityRole="button" accessibilityState={{ disabled: sharing }} accessibilityLabel={'Open ' + (pokemon?.displayName ?? 'Pokemon')} style={({ pressed }) => [styles.row, { borderColor: theme.border, backgroundColor: pressed ? theme.backgroundSelected : undefined }]}>
+                <Image source={require('@/assets/images/pokemon-open.png')} tintColor={theme.action} style={styles.icon} contentFit="contain" accessible={false} />
                 <View style={styles.labelGroup}>
-                  <Text style={[styles.label, { color: theme.disabled }]}>Open Pokémon</Text>
-                  <Text style={[styles.hint, { color: theme.disabled }]}>Details are coming soon</Text>
+                  <Text style={[styles.label, { color: theme.text }]}>Open Pokémon</Text>
                 </View>
               </Pressable>
               <Pressable disabled accessibilityRole="button" accessibilityState={{ disabled: true }} accessibilityLabel="Favorite. Saving favorites is not available yet." style={[styles.row, styles.disabled, { borderColor: theme.border }]}>

@@ -24,7 +24,7 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <View style={[styles.root, { backgroundColor: theme.background }]}>
           <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-          {fonts.loaded ? <Stack screenOptions={{ headerShown: false }}><Stack.Screen name="(tabs)" /></Stack> :
+          {fonts.loaded ? <Stack screenOptions={{ headerShown: false }}><Stack.Screen name="(tabs)" /><Stack.Screen name="pokemon/[id]" options={{ gestureEnabled: true }} /></Stack> :
             fonts.error ? <SafeAreaView style={styles.root}><ErrorView message="The app fonts could not load. Please retry." loading={fonts.retrying} onRetry={fonts.retry} useSystemFont /></SafeAreaView> : null}
           <AnimatedSplashOverlay ready={fonts.loaded || Boolean(fonts.error)} />
         </View>
