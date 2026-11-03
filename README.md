@@ -2,7 +2,7 @@
 
 An Expo and React Native Pokedex app for the Inholland Frontend Development exam. The app follows the supplied mobile Figma design and uses live data from PokeAPI.
 
-## Planned features
+## Features
 
 - Browse the complete Pokemon catalogue
 - Search Pokemon by name

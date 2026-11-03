@@ -38,20 +38,20 @@ Find a Pokemon and understand its key information and strengths.
 ## Technical core
 
 - [x] Runs in Expo Go
-- [ ] Live data through TanStack Query
-- [ ] At least 2 screens with Expo Router
-- [ ] Something in SQLite that survives a restart
-- [ ] Loading and error state on every load
-- [ ] One native feature: native Share from a Pokemon card
-- [ ] TypeScript and ESLint without errors
-- [ ] UI, data and logic in separate files
+- [x] Live data through TanStack Query
+- [x] At least 2 screens with Expo Router
+- [x] Something in SQLite that survives a restart
+- [x] Loading and error state on every load
+- [x] One native feature: native Share from a Pokemon card
+- [x] TypeScript and ESLint without errors
+- [x] UI, data and logic in separate files
 
 ## Optional
 
-- [ ] Pagination: page by page while scrolling
-- [ ] Clean TypeScript: no `any`, no `as` casts, no `@ts-ignore`
-- [ ] No warnings: no `console.log`, none in the terminal or on screen
-- [ ] Accessibility: labels for every action and support for large text
+- [x] Pagination: page by page while scrolling
+- [x] Clean TypeScript: no `any`, no `as` casts, no `@ts-ignore`
+- [x] No warnings: no `console.log`, none in the terminal or on screen
+- [x] Accessibility: labels for every action and support for large text
 - [ ] Optimistic update for favorites
 
 ## Out of scope

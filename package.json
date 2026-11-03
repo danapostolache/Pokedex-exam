@@ -42,7 +42,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "test": "node --no-warnings --test scripts/check-pokemon-detail.mjs scripts/check-pokemon-favorites.mjs scripts/check-pokemon-compare.mjs"
   },
   "private": true
 }

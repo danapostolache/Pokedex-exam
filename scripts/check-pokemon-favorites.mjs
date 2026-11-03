@@ -114,11 +114,11 @@ if (process.argv[2] === '--read-fixture') {
     assert.equal(first[0].pokemon_id, 25);
     assert(Number.isSafeInteger(first[0].created_at));
     assert.deepEqual(await service.setFavorite(25, true), first);
-    const reopened = JSON.parse(execFileSync(process.execPath, [fileURLToPath(import.meta.url), '--read-fixture', service.control.path], { encoding: 'utf8' }));
+    const reopened = JSON.parse(execFileSync(process.execPath, ['--no-warnings', fileURLToPath(import.meta.url), '--read-fixture', service.control.path], { encoding: 'utf8' }));
     assert.deepEqual(reopened, first);
     await service.setFavorite(25, false);
     await service.setFavorite(25, false);
-    const afterRemoval = JSON.parse(execFileSync(process.execPath, [fileURLToPath(import.meta.url), '--read-fixture', service.control.path], { encoding: 'utf8' }));
+    const afterRemoval = JSON.parse(execFileSync(process.execPath, ['--no-warnings', fileURLToPath(import.meta.url), '--read-fixture', service.control.path], { encoding: 'utf8' }));
     assert.deepEqual(afterRemoval, []);
     assert.equal(service.control.opened, 1);
     assert(service.control.calls.filter(({ kind }) => kind === 'write').every(({ params }) => params.length > 0));
