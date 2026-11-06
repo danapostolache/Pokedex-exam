@@ -17,7 +17,7 @@ function Artwork({ uri, name, size }: Props) {
   return (
     <View pointerEvents="box-none" style={[styles.frame, { width: size, minHeight: size }]}>
       {!uri ? <Text pointerEvents="none" style={[styles.message, { color: theme.textSecondary }]}>No artwork available</Text> : artwork.failed ? (
-        <Pressable accessibilityRole="button" accessibilityLabel={'Retry artwork for ' + name} onPress={artwork.retry} style={({ pressed }) => [styles.retry, { opacity: pressed ? Layout.pressedOpacity : 1 }]}>
+        <Pressable accessibilityRole="button" accessibilityLabel={'Retry artwork for ' + name} onPress={(event) => { event.stopPropagation(); artwork.retry(); }} style={({ pressed }) => [styles.retry, { opacity: pressed ? Layout.pressedOpacity : 1 }]}>
           <Text style={[styles.message, { color: theme.textSecondary }]}>Artwork unavailable</Text>
           <Text style={[styles.message, { color: theme.badge }]}>Retry image</Text>
         </Pressable>

@@ -29,14 +29,25 @@ export function PokemonEvolution({ species, evolution, onOpen }: Props) {
         <Text style={[styles.relationship, { color: theme.textSecondary }]}>Evolves from {entry.parent}</Text>
       </View> : null}
       {query.isError ? <View style={[styles.failure, { backgroundColor: theme.card }]}><Text style={[styles.name, { color: theme.text }]}>{entry.displayName}</Text><ErrorView message="This evolution member could not load." loading={query.isFetching} onRetry={() => { void query.refetch(); }} /></View> : query.data ? (
-        <View style={[styles.card, { backgroundColor: theme.card, shadowColor: theme.shadow }]}>
-          <Pressable accessibilityRole="button" accessibilityLabel={'Open ' + query.data.displayName + ', Pokemon number ' + query.data.id} onPress={() => onOpen(query.data.id)} style={({ pressed }) => [StyleSheet.absoluteFill, { opacity: pressed ? Layout.pressedOpacity : 1, backgroundColor: pressed ? theme.backgroundSelected : undefined }]} />
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={'Open ' + query.data.displayName + ', Pokemon number ' + query.data.id}
+          onPress={() => onOpen(query.data.id)}
+          style={({ pressed }) => [
+            styles.card,
+            {
+              backgroundColor: pressed ? theme.backgroundSelected : theme.card,
+              shadowColor: theme.shadow,
+              opacity: pressed ? Layout.pressedOpacity : 1,
+            },
+          ]}
+        >
           <View pointerEvents="box-none" style={[styles.artwork, { backgroundColor: theme.backgroundElement }]}><PokemonArtwork uri={query.data.cardArtwork} name={query.data.displayName} size={DetailLayout.evolutionArtwork} /></View>
           <View pointerEvents="none" style={styles.identity}>
             <View style={[styles.number, { backgroundColor: theme.badge }]}><Text style={[styles.numberText, { color: theme.badgeText }]}>{String(query.data.id).padStart(3, '0')}</Text></View>
             <Text style={[styles.name, { color: theme.text }]}>{query.data.displayName}</Text>
           </View>
-        </View>
+        </Pressable>
       ) : <View style={styles.loading}><ActivityIndicator color={theme.badge} accessibilityLabel={'Loading ' + entry.displayName} /><Text style={[styles.message, { color: theme.textSecondary }]}>{entry.displayName}</Text></View>}
     </View>)}
   </View>;
